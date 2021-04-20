@@ -1,99 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Assetory JS SDK Example</title>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 
-        <link rel="stylesheet" href="./style.css">
-    </head>
-    <body>
+    <link rel="stylesheet" href="./style.css">
+    
+</head>
+<body>
 
-        <div id="game" style="background: tomato;">
-            <ul id="playerData">
-                <li id="playerId"></li>
-                <li id="playerName"></li>
-            </ul>
-
-            <button id="updateButton">Update</button>
+    <div id="game">
+        <div id="loadingIndicator">
+            <div id="spinner"></div>
         </div>
-        
-        <div id="loadingSpinner">
-            Loading...
-        </div>
+        <input type="text" id="userNameInput" placeholder="Username">
+        <button id="connectButton">Connect to Server</button>
+        <button id="loginButton">Login Player</button>
+        <button id="gatherButton">Gather Project</button>
+        <button id="validateButton">Validate Project</button>
 
-        <div class="spinner">
-            Updating...
-        </div>
+        <pre><code><div id="output"></div></code></pre>
+    </div>
 
-        <!-- 
-            Logische reihenfolge (REST LOGIN):
-            - spieler einloggen
-                - schauen ob der spieler existiert
-                    - ja: spielerdaten zurückgeben
-                    - nein: spieler erstellen und daten zurückgeben
-            - project finden
-                - schauen ob der spieler im projekt existiert
-                    - ja: spielerdaten im zusammenhang mit dem spiel zurückgeben
-                    - nein: spieler zum spiel hinzufügen und neue daten zurückgeben
-            - login bestätigen und antwort zurückgeben
-        -->
-
-        <script src="./../src/core.js"></script>
-        <script src="./../src/sha.js"></script>
-
-        <script>
-            const loadingSpinner = document.getElementById("loadingSpinner");
-            const updateSpinner = document.querySelector(".spinner");
-            const updateButton = document.getElementById("updateButton");
-            const gameElement = document.getElementById("game");
-
-            const playerId = gameElement.querySelector("#playerData #playerId");
-            const playerNameElement = gameElement.querySelector("#playerData #playerName");
-        
-            let playerName = "";
-            let playerIdentifier = "";
-
-            loadingSpinner.style.display = "none";
-            updateSpinner.style.display = "none";
-
-            gameElement.style.display = "none";
-
-            const sdk = new Assetory({ token: "asdf", devmode: true });
-
-            loadingSpinner.style.display = "block";
-
-            sdk.login("TestPlayer", ans =>
-            {
-                console.log("hallo welt", ans);
-                loadingSpinner.style.display = "none";
-                gameElement.style.display = "block";
-                
-                playerIdentifier = ans.player.data.playerId;
-
-                playerId.innerText = "playerId: " + playerIdentifier;
-
-                playerName = ans.player.name;
-            });
-
-            updateButton.onclick = (event) =>
-            {
-                updateSpinner.style.display = "block";
-
-                sdk.update({ query: { playerId: playerIdentifier } }, ans =>
-                {
-                    updateSpinner.style.display = "none";
-
-                    playerId.innerText = "playerId: " + ans.user;
-
-                    console.log(ans);
-                });
-
-                playerNameElement.innerText = "PlayerName: " + playerName;
-            }
-
-        </script>
-
-    </body>
+    <script type="module" src="./index.js"></script>
+    
+</body>
 </html>
