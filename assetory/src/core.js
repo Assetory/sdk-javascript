@@ -1,4 +1,5 @@
 import { Player, Connection, Project } from "./../index.js";
+import { Session } from "./session.js";
 import { getApiURL } from './utils/index.js';
 
 /**
@@ -25,6 +26,7 @@ class Core
         this.player = new Player();
         this.project = new Project({ projectId: this.projectId });
         this.sessions = [];
+        this.currentSession = undefined;
     }
 
     /**
@@ -177,6 +179,35 @@ class Core
             else
             {
                 return { success: players.success, players };
+            }
+        }
+    }
+
+    /**
+     * @todo Plan out start function to unify all above steps.
+     */
+
+    async joinSession(callback)
+    {
+        if(this.connection.isOnline)
+        {
+            this.currentSession = new Session();
+
+            const session = await this.currentSession.createSession(this.player.id, this.project.projectId);
+
+            if(session.success)
+            {
+                this.currentSession.connected = true;
+                this.currentSession.id = session.id;
+
+                if(callback)
+                {
+                    callback({ success: session.success, session });
+                }
+                else
+                {
+                    return { success: session.success, session };
+                }
             }
         }
     }
